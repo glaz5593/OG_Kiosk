@@ -32,6 +32,11 @@
                 <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".services.WindowService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

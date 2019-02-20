@@ -15,10 +15,13 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import il.co.activeview.og_kiosk.Json;
 import il.co.activeview.og_kiosk.objects.Battery;
 import il.co.activeview.og_kiosk.objects.Device;
 import il.co.activeview.og_kiosk.receivers.ScreenReceiver;
+import il.co.activeview.og_kiosk.request.Request;
 import il.co.activeview.og_kiosk.request.RequestBrodcastManager;
+import il.co.activeview.og_kiosk.request.RequestHash;
 import il.co.activeview.og_kiosk.request.RequestPackage;
 
 
@@ -56,27 +59,41 @@ public class MainService extends Service {
     private void listenToRequestRequired() {
         IntentFilter intentFilter=new IntentFilter() ;
         intentFilter.addAction(RequestBrodcastManager.Action_GET_REQUEST_List);
-        intentFilter.addAction(RequestBrodcastManager.Action_REQUEST);
+        intentFilter.addAction(RequestBrodcastManager.Action_ADD_REQUEST);
         this.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 switch (action){
-                    case RequestBrodcastManager.Action_REQUEST:{
-                        
+                    case RequestBrodcastManager.Action_ADD_REQUEST: {
+                        String sR = intent.getStringExtra(RequestBrodcastManager.EXTRA_REQUEST);
+                        Request r = Json.toObject(sR,Request.class);
+
+                        if (r != null) {
+                            RequestBrodcastManager.getInstance().hash.addRequest(r);
+                        }
                         break;
                     }
                     case RequestBrodcastManager.Action_GET_REQUEST_List:{
                         int targetId=intent.getIntExtra(RequestBrodcastManager.EXTRA_TARGET_ID,0);
-                        RequestPackage pack=RequestBrodcastManager.getInstance().getRequestPackage(targetId);
-                        if(pack != null){
-                            sendRequestPackage(pack);
-                        }
+                        sendRequestPackage(targetId);
                         break;
                     }
                 }
             }
         }, new IntentFilter(RequestBrodcastManager.Action_GET_REQUEST_List));
+    }
+    private void sendRequestPackage(int targetId) {
+        RequestPackage pack=RequestBrodcastManager.getInstance().hash.getRequestPackage(targetId);
+        if(pack != null && pack.requests.size() > 0){
+            sendRequestPackage(pack);
+        }
+    }
+    private void sendRequestPackage(RequestPackage pack) {
+        String p = Json.toString(pack);
+        Intent intent = new Intent(RequestBrodcastManager.Action_REQUEST_PACK);
+        intent.putExtra(RequestBrodcastManager.EXTRA_REQUEST_PACK, p);
+        sendBroadcast(intent);
     }
 
     private void listenToGsmSignal() {
