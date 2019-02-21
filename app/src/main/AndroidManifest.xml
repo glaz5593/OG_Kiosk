@@ -3,6 +3,7 @@
     package="il.co.activeview.og_kiosk">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -37,6 +38,8 @@
             android:name=".services.WindowService"
             android:enabled="true"
             android:exported="true" />
+
+        <service android:name=".services.ServerService" android:label="Service" android:icon="@drawable/ic_launcher_foreground"> </service>
     </application>
 
 </manifest>
