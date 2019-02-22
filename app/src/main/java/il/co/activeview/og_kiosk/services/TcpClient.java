@@ -12,11 +12,13 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import il.co.activeview.og_kiosk.Json;
+import il.co.activeview.og_kiosk.objects.Device;
+
 public class TcpClient {
 
     public static final String TAG = TcpClient.class.getSimpleName();
-    public String IEMI = "Empty";
-    public static String SERVER_IP = ""; //server IP address
+     public static String SERVER_IP = ""; //server IP address
     public static final int SERVER_PORT = 11001;
 
     public boolean isAlive = true;
@@ -37,10 +39,9 @@ public class TcpClient {
     /**
      * Constructor of the class. OnMessagedReceived listens for the messages received from server
      */
-    public TcpClient(Context context, String serverIp, String imei, OnMessageReceived listener) {
+    public TcpClient(Context context, String serverIp, OnMessageReceived listener) {
         mMessageListener = listener;
         SERVER_IP = serverIp;
-        IEMI = imei;
         this.context = context;
     }
 
@@ -106,7 +107,8 @@ public class TcpClient {
                     public void run() {
                         while (isAlive) {
                             try {
-                                sendMessage("IEMI: " + IEMI);
+                                Device device = Device.getCurrent(context);
+                                sendMessage(Json.toString(device));
                                 Thread.sleep(5000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();

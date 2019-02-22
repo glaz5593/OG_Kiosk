@@ -31,30 +31,29 @@ public class ServerService extends IntentService {
     }
 
     private void RunUdpConnection() {
-            try {
-                if(listen){
-                    new Thread(new Runnable() {
-                        public void run() {
-                            startUDPListener();
-                        }
-                    }).start();
-                }
-
-                // try broadcast
-                while (keepBroadcast) {
-                    System.out.println(getClass().getName() + ">>> Try to BROADCAST!");
-                    sendBroadcast("KAWABANGA");
-                    Thread.sleep(5000);
-                }
-
-            } catch (Exception e) {
-                System.out.println(getClass().getName() + ">>> Error: " + e.getMessage());
+        try {
+            if (listen) {
+                new Thread(new Runnable() {
+                    public void run() {
+                        startUDPListener();
+                    }
+                }).start();
             }
-            try {
+
+            // try broadcast
+            while (keepBroadcast) {
+                System.out.println(getClass().getName() + ">>> Try to BROADCAST!");
+                sendBroadcast("KAWABANGA");
                 Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            System.out.println(getClass().getName() + ">>> Error: " + e.getMessage());
+        }
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startUDPListener() {

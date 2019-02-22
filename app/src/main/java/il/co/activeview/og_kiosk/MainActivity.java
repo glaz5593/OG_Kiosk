@@ -17,7 +17,7 @@ import il.co.activeview.og_kiosk.objects.Device;
 import il.co.activeview.og_kiosk.services.MainService;
 
 public class MainActivity extends Activity {
-int PERMISSION_READ_STATE=7;
+    int PERMISSION_READ_STATE = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,33 +31,7 @@ int PERMISSION_READ_STATE=7;
         startService(new Intent(getApplicationContext(), MainService.class));
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSION_READ_STATE);
-        return;
+            return;
         }
-    }
-
-    public void onClick(View view) {
-        LogDevice();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                LogDevice();
-            }
-        }).start();
-    }
-
-    private void LogDevice() {
-        Device d = Device.getCurrent(getApplicationContext());
-        Log.i("DeviceLog","isScreenOn: "+d.screenOn);
-        Log.i("DeviceLog","batteryMode: "+d.batteryMode);
-        Log.i("DeviceLog","isCharging: "+d.isCharging);
-        Log.i("DeviceLog","volume: "+d.volume);
-        Log.i("DeviceLog","imei: "+d.imei);
-        Log.i("DeviceLog","screenOn: "+d.screenOn);
-        Log.i("DeviceLog","connection: "+d.signalGsmValue);
     }
 }

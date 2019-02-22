@@ -8,13 +8,11 @@ import android.widget.Toast;
 public class ConnectTask extends AsyncTask<String, String, TcpClient> {
     private Context context;
     private String serverIp = "";
-    private String Imei = "";
     public TcpClient mTcpClient;
 
-    public ConnectTask(Context context, String serverIp, String imei) {
+    public ConnectTask(Context context, String serverIp) {
         super();
         this.serverIp = serverIp;
-        this.Imei = imei;
         this.context = context;
     }
 
@@ -22,7 +20,7 @@ public class ConnectTask extends AsyncTask<String, String, TcpClient> {
     protected TcpClient doInBackground(String... message) {
 
         //we create a TCPClient object
-        mTcpClient = new TcpClient(context, serverIp, Imei, new TcpClient.OnMessageReceived() {
+        mTcpClient = new TcpClient(context, serverIp, new TcpClient.OnMessageReceived() {
             @Override
             //here the messageReceived method is implemented
             public void messageReceived(String message) {
