@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import il.co.activeview.og_kiosk.Json;
+import il.co.activeview.og_kiosk.UUID_List;
 
 /**
  * Created by moshe on 17/02/2019.
@@ -38,5 +39,15 @@ public class RequestHash {
             }
         }
         return  res;
+    }
+
+    public void remove(UUID_List list) {
+        synchronized(map) {
+            for (UUID uid: list){
+                if(map.containsKey(uid)){
+                   map.remove(uid);
+                }
+            }
+        }
     }
 }

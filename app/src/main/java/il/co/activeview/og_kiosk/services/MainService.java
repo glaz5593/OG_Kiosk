@@ -22,11 +22,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 
 import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.Json;
 import il.co.activeview.og_kiosk.MainActivity;
 import il.co.activeview.og_kiosk.ServerListener;
+import il.co.activeview.og_kiosk.UUID_List;
 import il.co.activeview.og_kiosk.objects.Battery;
 import il.co.activeview.og_kiosk.objects.Device;
 import il.co.activeview.og_kiosk.receivers.ScreenReceiver;
@@ -72,7 +74,7 @@ public class MainService extends Service {
         listenToGsmSignal();
         listenToRequestRequired();
         initServerService();
-        initServerListener();
+        //initServerListener();
 
         startForeground(NOTIFICATION, getNotification());
     }
@@ -122,6 +124,7 @@ public class MainService extends Service {
     private void listenToRequestRequired() {
         IntentFilter intentFilter=new IntentFilter() ;
         intentFilter.addAction(RequestBrodcastManager.Action_GET_REQUEST_List);
+        intentFilter.addAction(RequestBrodcastManager.Action_CONFIRM_REQUEST);
         intentFilter.addAction(RequestBrodcastManager.Action_ADD_REQUEST);
         this.registerReceiver(new BroadcastReceiver() {
             @Override
@@ -140,6 +143,12 @@ public class MainService extends Service {
                     case RequestBrodcastManager.Action_GET_REQUEST_List:{
                         int targetId=intent.getIntExtra(RequestBrodcastManager.EXTRA_TARGET_ID,0);
                         sendRequestPackage(targetId);
+                        break;
+                    }
+                    case RequestBrodcastManager.Action_CONFIRM_REQUEST:{
+                        String sList = intent.getStringExtra(RequestBrodcastManager.EXTRA_UUID_LIST);
+                        UUID_List list = Json.toObject(sList,UUID_List.class);
+                        RequestBrodcastManager.getInstance().hash.remove(list);
                         break;
                     }
                 }

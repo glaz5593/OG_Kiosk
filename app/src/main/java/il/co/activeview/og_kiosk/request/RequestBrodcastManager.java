@@ -10,9 +10,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.Json;
+import il.co.activeview.og_kiosk.UUID_List;
 
 /**
  * Created by moshe on 17/02/2019.
@@ -23,8 +26,10 @@ public class RequestBrodcastManager {
     public final static String EXTRA_REQUEST = "Request";
     public final static String EXTRA_REQUEST_PACK = "REQUEST_PACK";
     public final static String EXTRA_TARGET_ID = "TargetId";
+    public final static String EXTRA_UUID_LIST= "UUID_LIST";
 
     public final static String Action_ADD_REQUEST = "il.co.activeview.serverservice.ADD_REQUEST";
+    public final static String Action_CONFIRM_REQUEST = "il.co.activeview.serverservice.CONFIRM_REQUEST";
     public final static String Action_GET_REQUEST_List = "il.co.activeview.serverservice.GET_REQUEST_List";
     public final static String Action_REQUEST_PACK = "il.co.activeview.serverservice.Action_REQUEST_PACK";
 
@@ -55,6 +60,11 @@ public class RequestBrodcastManager {
         context.sendBroadcast(i);
      }
 
+    public void AddRequestConfirm (Context context, UUID_List uids) {
+        Intent i = new Intent(Action_CONFIRM_REQUEST);
+        i.putExtra(EXTRA_UUID_LIST, Json.toString(uids));
+        context.sendBroadcast(i);
+    }
 
     public void sendRequestPackage(Context context,RequestPackage pack) {
         String p = Json.toString(pack);

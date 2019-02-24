@@ -23,7 +23,7 @@ public class Device {
 
     public static Battery battery;
 
-    public static Device getCurrent(Context context) {
+    public static Device getInstance(Context context) {
         Device res = new Device();
         if (battery != null) {
             res.batteryMode = battery.percent;
