@@ -1,11 +1,21 @@
 package il.co.activeview.og_kiosk.request;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.StrictMode;
+import android.util.Log;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
+import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.Json;
 
 /**
- * Created by משה on 17/02/2019.
+ * Created by moshe on 17/02/2019.
  */
 
 public class RequestBrodcastManager {
@@ -33,15 +43,49 @@ public class RequestBrodcastManager {
         hash = new RequestHash();
     }
 
-    public Intent AskRequestList(int targetId) {
+    public void AskRequestList(Context context, int targetId) {
         Intent i = new Intent(Action_GET_REQUEST_List);
         i.putExtra(EXTRA_TARGET_ID, targetId);
-        return i;
+        context.sendBroadcast(i);
+     }
+
+    public void AddRequest(Context context, Request request) {
+        Intent i = new Intent(Action_ADD_REQUEST);
+        i.putExtra(EXTRA_REQUEST, Json.toString(request));
+        context.sendBroadcast(i);
+     }
+
+
+    public void sendRequestPackage(Context context,RequestPackage pack) {
+        String p = Json.toString(pack);
+        Intent intent = new Intent(RequestBrodcastManager.Action_REQUEST_PACK);
+        intent.putExtra(RequestBrodcastManager.EXTRA_REQUEST_PACK, p);
+        context.sendBroadcast(intent);
     }
 
-    public Intent AddRequest(Request request) {
-        Intent i = new Intent(Action_ADD_REQUEST);
-        i.putExtra(EXTRA_TARGET_ID, Json.toString(request));
-        return i;
+
+    private void sendBroadcastToServer(String messageStr) {
+        // Hack Prevent crash (sending should be done using an async task)
+        StrictMode.ThreadPolicy policy = new   StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        byte[] sendData = messageStr.getBytes();
+        try {
+            DatagramSocket sendSocket = new DatagramSocket(null);
+            sendSocket.setReuseAddress(true);
+            sendSocket.bind(new InetSocketAddress(AppInit.serverListenPortNumber));
+            sendSocket.setBroadcast(true);
+
+            //Broadcast to all IP addresses on subnet
+            try {
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), AppInit.serverListenPortNumber);
+                sendSocket.send(sendPacket);
+                Log.i(getClass().getName(),  "Request packet sent to: 255.255.255.255 (DEFAULT)");
+            } catch (Exception e) {
+                Log.e("sendBroadcast", "IOException: " + e.getMessage());
+            }
+        } catch (IOException e) {
+            Log.e("sendBroadcast", "IOException: " + e.getMessage());
+        }
     }
+
 }

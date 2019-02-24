@@ -8,7 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
 /**
- * Created by משה on 20/02/2019.
+ * Created by moshe on 20/02/2019.
  */
 
 public class Device {

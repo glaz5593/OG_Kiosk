@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Created by משה on 17/02/2019.
+ * Created by moshe on 17/02/2019.
  */
 
 public class Request implements Serializable{

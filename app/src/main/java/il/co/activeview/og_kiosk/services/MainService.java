@@ -23,8 +23,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.Json;
 import il.co.activeview.og_kiosk.MainActivity;
+import il.co.activeview.og_kiosk.ServerListener;
 import il.co.activeview.og_kiosk.objects.Battery;
 import il.co.activeview.og_kiosk.objects.Device;
 import il.co.activeview.og_kiosk.receivers.ScreenReceiver;
@@ -33,6 +35,9 @@ import il.co.activeview.og_kiosk.request.RequestBrodcastManager;
 import il.co.activeview.og_kiosk.request.RequestHash;
 import il.co.activeview.og_kiosk.request.RequestPackage;
 
+/**
+ * Created by moshe on 20/02/2019.
+ */
 
 public class MainService extends Service {
     private NotificationManager mNM;
@@ -42,6 +47,7 @@ public class MainService extends Service {
     private DataUpdateReceiver dataUpdateReceiver;
     ConnectTask connectTask;
     Intent serviceIntent;
+    ServerListener serverListener;
 
     public class MyServiceBinder extends Binder {
         MainService getService() {
@@ -66,8 +72,14 @@ public class MainService extends Service {
         listenToGsmSignal();
         listenToRequestRequired();
         initServerService();
+        initServerListener();
 
         startForeground(NOTIFICATION, getNotification());
+    }
+
+    private void initServerListener() {
+        ServerListener serverListener=new ServerListener(getApplicationContext(), AppInit.serverSendPortNumber);
+        serverListener.start();
     }
 
     private void initServerService() {
@@ -85,8 +97,7 @@ public class MainService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("Connect")) {
-                Toast.makeText(context, "Connect", Toast.LENGTH_SHORT).show();
-                String serverIp = intent.getExtras().getString("serverIp");
+                 String serverIp = intent.getExtras().getString("serverIp");
                 connectTask =  new ConnectTask(context, serverIp);
                 connectTask.execute("");
 
@@ -107,30 +118,6 @@ public class MainService extends Service {
         }
     }
 
-
-    private void sendLocalBroadcast(String messageStr) {
-        // Hack Prevent crash (sending should be done using an async task)
-        StrictMode.ThreadPolicy policy = new   StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        byte[] sendData = messageStr.getBytes();
-        try {
-            DatagramSocket sendSocket = new DatagramSocket(null);
-            sendSocket.setReuseAddress(true);
-            sendSocket.bind(new InetSocketAddress(9876));
-            sendSocket.setBroadcast(true);
-
-            //Broadcast to all IP addresses on subnet
-            try {
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 9876);
-                sendSocket.send(sendPacket);
-                System.out.println(getClass().getName() + ">>> Request packet sent to: 255.255.255.255 (DEFAULT)");
-            } catch (Exception e) {
-                Log.e("sendBroadcast", "IOException: " + e.getMessage());
-            }
-        } catch (IOException e) {
-            Log.e("sendBroadcast", "IOException: " + e.getMessage());
-        }
-    }
 
     private void listenToRequestRequired() {
         IntentFilter intentFilter=new IntentFilter() ;
@@ -162,14 +149,8 @@ public class MainService extends Service {
     private void sendRequestPackage(int targetId) {
         RequestPackage pack=RequestBrodcastManager.getInstance().hash.getRequestPackage(targetId);
         if(pack != null && pack.requests.size() > 0){
-            sendRequestPackage(pack);
+            RequestBrodcastManager.getInstance().sendRequestPackage(getApplicationContext(), pack);
         }
-    }
-    private void sendRequestPackage(RequestPackage pack) {
-        String p = Json.toString(pack);
-        Intent intent = new Intent(RequestBrodcastManager.Action_REQUEST_PACK);
-        intent.putExtra(RequestBrodcastManager.EXTRA_REQUEST_PACK, p);
-        sendBroadcast(intent);
     }
 
     private void listenToGsmSignal() {

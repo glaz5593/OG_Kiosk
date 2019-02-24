@@ -9,7 +9,7 @@ import java.util.UUID;
 import il.co.activeview.og_kiosk.Json;
 
 /**
- * Created by משה on 17/02/2019.
+ * Created by moshe on 17/02/2019.
  */
 
 public class RequestHash {

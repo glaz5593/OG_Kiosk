@@ -7,7 +7,7 @@ import android.content.Intent;
 import il.co.activeview.og_kiosk.objects.Device;
 
 /**
- * Created by משה on 20/02/2019.
+ * Created by moshe on 20/02/2019.
  */
 
 public class ScreenReceiver extends BroadcastReceiver {

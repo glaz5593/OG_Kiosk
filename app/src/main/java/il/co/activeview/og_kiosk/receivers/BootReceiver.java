@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.provider.Settings;
 
 /**
- * Created by משה on 20/02/2019.
+ * Created by moshe on 20/02/2019.
  */
 
 public class BootReceiver extends BroadcastReceiver {

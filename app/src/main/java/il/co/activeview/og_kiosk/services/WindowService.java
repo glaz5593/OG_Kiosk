@@ -23,10 +23,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.MainActivity;
 import il.co.activeview.og_kiosk.R;
 
 public class WindowService extends Service {
+
 
     public static String TAG = "WindowService";
     private final MainActivityLifecycleCallbacks mainActivityLifecycleCallbacks = new MainActivityLifecycleCallbacks(this);
@@ -46,6 +48,10 @@ public class WindowService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if(!AppInit.rumWindowsService){
+            return;
+        }
         Log.i(TAG, "Launched");
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
 

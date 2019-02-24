@@ -3,8 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OG_Kiosk.iml" filepath="$PROJECT_DIR$/.idea/OG_Kiosk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/OG_Kiosk.iml" filepath="$PROJECT_DIR$/OG_Kiosk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Android\OG_Kiosk\OG_Kiosk.iml" filepath="C:\Android\OG_Kiosk\OG_Kiosk.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

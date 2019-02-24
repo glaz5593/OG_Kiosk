@@ -5,6 +5,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Created by moshe on 20/02/2019.
+ */
+
 public class ConnectTask extends AsyncTask<String, String, TcpClient> {
     private Context context;
     private String serverIp = "";
@@ -18,14 +22,11 @@ public class ConnectTask extends AsyncTask<String, String, TcpClient> {
 
     @Override
     protected TcpClient doInBackground(String... message) {
-
-        //we create a TCPClient object
         mTcpClient = new TcpClient(context, serverIp, new TcpClient.OnMessageReceived() {
             @Override
             //here the messageReceived method is implemented
             public void messageReceived(String message) {
-                //this method calls the onProgressUpdate
-                publishProgress(message);
+                 publishProgress(message);
             }
         });
         mTcpClient.run();
@@ -36,10 +37,8 @@ public class ConnectTask extends AsyncTask<String, String, TcpClient> {
     @Override
     protected void onProgressUpdate(String... values) {
         super.onProgressUpdate(values);
-        //response received from server
-        Log.d("test", "response " + values[0]);
-        //process server response here....
-    }
+        Log.i("test", "response " + values[0]);
+     }
 
 
 }

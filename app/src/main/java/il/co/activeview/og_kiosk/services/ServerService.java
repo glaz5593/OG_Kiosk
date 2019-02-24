@@ -14,6 +14,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import il.co.activeview.og_kiosk.AppInit;
+
+/**
+ * Created by moshe on 20/02/2019.
+ */
+
 public class ServerService extends IntentService {
 
     private boolean keepBroadcast = true;
@@ -42,12 +48,12 @@ public class ServerService extends IntentService {
 
             // try broadcast
             while (keepBroadcast) {
-                System.out.println(getClass().getName() + ">>> Try to BROADCAST!");
-                sendBroadcast("KAWABANGA");
+                Log.i(getClass().getName(),  "Try to BROADCAST!");
+                sendBroadcast(AppInit.ServerAskParentWord);
                 Thread.sleep(5000);
             }
         } catch (Exception e) {
-            System.out.println(getClass().getName() + ">>> Error: " + e.getMessage());
+            Log.i(getClass().getName(),  "Error: " + e.getMessage());
         }
         try {
             Thread.sleep(5000);
@@ -72,7 +78,7 @@ public class ServerService extends IntentService {
                 dsocket.receive(packet);
                 serverIp = new String(buffer, 0, packet.getLength());
                 Log.i("UDP packet received", serverIp);
-                System.out.println(getClass().getName() + ">>> UDP packet received" + serverIp);
+                Log.i(getClass().getName(),  "UDP packet received" + serverIp);
                 //HN.post(new DisplayToast(serverIp));
                 listen = false;
                 keepBroadcast = false;
@@ -87,7 +93,7 @@ public class ServerService extends IntentService {
                 sendBroadcast(intent);
             }
         } catch (Exception e) {
-            System.out.println(getClass().getName() + " >>>> "+ e.getMessage());
+            Log.i(getClass().getName(),  " >"+ e.getMessage());
         }
     }
 
@@ -112,7 +118,7 @@ public class ServerService extends IntentService {
             try {
                 DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 9876);
                 sendSocket.send(sendPacket);
-                System.out.println(getClass().getName() + ">>> Request packet sent to: 255.255.255.255 (DEFAULT)");
+                Log.i(getClass().getName(),  "Request packet sent to: 255.255.255.255 (DEFAULT)");
             } catch (Exception e) {
                 Log.e("sendBroadcast", "IOException: " + e.getMessage());
             }

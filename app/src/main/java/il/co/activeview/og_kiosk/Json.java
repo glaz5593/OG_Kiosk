@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by משה on 20/02/2019.
+ * Created by moshe on 20/02/2019.
  */
 
 public class Json {
