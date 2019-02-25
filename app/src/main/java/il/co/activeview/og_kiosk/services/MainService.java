@@ -230,14 +230,14 @@ int counter=0;
                     }
 
 
-                    if(!MainActivity.isActive) {
-                        Intent setAppForegroundIntent = new Intent(getBaseContext(), MainActivity.class);
-                        setAppForegroundIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        setAppForegroundIntent.setAction("android.intent.action.MAIN");
-                        setAppForegroundIntent.addCategory("android.intent.category.LAUNCHER");
-                        setAppForegroundIntent.putExtra("screenOn", true);
-                        startActivity(setAppForegroundIntent);
-                    }
+//                    if(!MainActivity.isActive) {
+//                        Intent setAppForegroundIntent = new Intent(getBaseContext(), MainActivity.class);
+//                        setAppForegroundIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        setAppForegroundIntent.setAction("android.intent.action.MAIN");
+//                        setAppForegroundIntent.addCategory("android.intent.category.LAUNCHER");
+//                        setAppForegroundIntent.putExtra("screenOn", true);
+//                        startActivity(setAppForegroundIntent);
+//                    }
                 }
             }
         }).start();
