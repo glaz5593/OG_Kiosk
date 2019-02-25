@@ -3,8 +3,10 @@ package il.co.activeview.og_kiosk;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import il.co.activeview.og_kiosk.objects.Device;
+import il.co.activeview.og_kiosk.receivers.ScreenReceiver;
 import il.co.activeview.og_kiosk.services.MainService;
 import il.co.activeview.og_kiosk.services.WindowService;
 
@@ -25,8 +28,11 @@ import il.co.activeview.og_kiosk.services.WindowService;
  */
 
 public class MainActivity extends Activity {
+    public static String ResumeTimeExtra = "ResumeTimeExtra";
     int PERMISSION_READ_STATE = 7;
     int counter = 0;
+   public static String AreYouResumeAction="AreYouResumeAction";
+   public static String IResumeAction="IResumeAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,5 +66,24 @@ public class MainActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         checkPermissionM();
         AppInit.runServices(getApplicationContext());
+    }
+
+    BroadcastReceiver receiver;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        receiver=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                sendBroadcast(new Intent(), IResumeAction);
+            }
+        };
+        registerReceiver(receiver,new IntentFilter(AreYouResumeAction));
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
     }
 }

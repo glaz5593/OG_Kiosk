@@ -23,6 +23,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Date;
 
 import il.co.activeview.og_kiosk.AppInit;
 import il.co.activeview.og_kiosk.Json;
@@ -199,18 +200,44 @@ public class MainService extends Service {
             }
         }
     }
+
+    Date resumeDate;
     private void runThread() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
+                    Date d=new Date();
+                    resumeDate=null;
+                    Intent intent=new Intent() ;
+                    intent.putExtra(MainActivity.ResumeTimeExtra,d.getTime());
+                    sendBroadcast(new Intent(),MainActivity.AreYouResumeAction);
+
+
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+int counter=0;
+                    while (counter< 7 &&resumeDate==null){
+                        try {
+                            counter++;
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
 
+                    if(!MainActivity.isActive) {
+                        Intent setAppForegroundIntent = new Intent(getBaseContext(), MainActivity.class);
+                        setAppForegroundIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        setAppForegroundIntent.setAction("android.intent.action.MAIN");
+                        setAppForegroundIntent.addCategory("android.intent.category.LAUNCHER");
+                        setAppForegroundIntent.putExtra("screenOn", true);
+                        startActivity(setAppForegroundIntent);
+                    }
                 }
             }
         }).start();
