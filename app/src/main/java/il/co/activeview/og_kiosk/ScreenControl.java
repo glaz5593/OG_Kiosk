@@ -1,5 +1,6 @@
 package il.co.activeview.og_kiosk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,7 +19,7 @@ public class ScreenControl {
 
     static ScreenControl mInstance;
 
-    public static ScreenControl getInstance(Context context) {
+    public static ScreenControl getInstance(Activity context) {
         if (mInstance == null) {
             mInstance = new ScreenControl(context);
         }
@@ -26,7 +27,7 @@ public class ScreenControl {
         return mInstance;
     }
 
-    public ScreenControl(Context context){
+    public ScreenControl(Activity context){
     this.context = context;
         ownerLockManager = new OwnerLockManager(context);
     }
@@ -54,7 +55,7 @@ public class ScreenControl {
     }
 
     public void removeControl() {
-        ownerLockManager.stopLock(context);
+        ownerLockManager.stopLock( );
     }
     private void askSystemWritePermission(Context context){
         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
